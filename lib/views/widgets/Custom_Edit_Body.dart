@@ -1,50 +1,112 @@
 import 'package:flutter/material.dart';
-
+import 'package:notes_app/sqlDb.dart';
+import '../Notes_view.dart';
 import 'Custom_appbar.dart';
 import 'Customtextfield.dart';
 
-class CustomEditBody extends StatelessWidget {
-  const CustomEditBody({super.key});
+class CustomEditBody extends StatefulWidget {
+  final int taskId; // Pass task ID to identify the task to be edited
+  final String currentTitle; // Pass current title
+  final String currentContent; // Pass current content
+
+  const CustomEditBody({
+    super.key,
+    required this.taskId,
+    required this.currentTitle,
+    required this.currentContent,
+  });
+
+  @override
+  _CustomEditBodyState createState() => _CustomEditBodyState();
+}
+
+class _CustomEditBodyState extends State<CustomEditBody> {
+  late TextEditingController titleController;
+  late TextEditingController contentController;
+  DateTime? selectedDate;
+
+  sqldb db = sqldb();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with current values
+    titleController = TextEditingController(text: widget.currentTitle);
+    contentController = TextEditingController(text: widget.currentContent);
+  }
+
+  Future<void> _updateTask() async {
+    // Build SQL query for updating the task
+    int response = await db.updateData(
+      "UPDATE tasks SET title = ?, content = ? WHERE id = ?",
+      [titleController.text, contentController.text, widget.taskId],
+    );
+
+    if (response > 0) {
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NotesView())); // Go back to the previous screen after updating
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error updating task')),
+      );
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading:  IconButton(
+        leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
           icon: const Icon(Icons.arrow_back_ios),
         ),
       ),
-      body: const Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 16.0),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           children: [
-            CustomAppbar(
+            const CustomAppbar(
               title: 'Edit Task',
               icon: Icons.check,
             ),
-            SizedBox(height: 50,),
-
-            // CustomTextfield(
-            //
-            //   hint: "Title",
-            // ),
-            //
-            // SizedBox(height: 20,),
-            //
-            // CustomTextfield(
-            //   hint: "Content",
-            //   maxlines: 3,
-            // ),
-
+            const SizedBox(height: 50),
+            CustomTextfield(
+              controller: titleController,
+              hint: "Title",
+            ),
+            const SizedBox(height: 20),
+            CustomTextfield(
+              controller: contentController,
+              hint: "Content",
+              maxlines: 3,
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _updateTask,
+              child: const Text('Update Task'),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
 
 //
 // import 'package:flutter/material.dart';

@@ -52,7 +52,11 @@ class _ItemsnoteState extends State<Itemsnote> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const CustomEditBody(),
+            builder: (context) =>  CustomEditBody(
+              currentContent: widget.task['content'],
+              currentTitle: widget.task['title'],
+              taskId: widget.task['id'],
+            ),
           ),
         );
       },

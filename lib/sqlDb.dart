@@ -53,9 +53,9 @@ class sqldb {
   }
 
 
-  updateData(String sql) async {
+  Future<int> updateData(String sql, List<dynamic> arguments) async {
     Database? mydb = await db;
-    int response = await mydb!.rawUpdate(sql);
+    int response = await mydb!.rawUpdate(sql, arguments);
     return response;
   }
 
