@@ -6,9 +6,12 @@ import 'Custom_Edit_Body.dart';
 
 class Itemsnote extends StatefulWidget {
   final int index;
-  final Map task;
+  // final Map task;
 
-  Itemsnote({super.key, required this.index, required this.task});
+  final String title;
+  final String content;
+
+  Itemsnote({super.key, required this.index, required this.title, required this.content});
 
   @override
   _ItemsnoteState createState() => _ItemsnoteState();
@@ -53,9 +56,9 @@ class _ItemsnoteState extends State<Itemsnote> {
           context,
           MaterialPageRoute(
             builder: (context) =>  CustomEditBody(
-              currentContent: widget.task['content'],
-              currentTitle: widget.task['title'],
-              taskId: widget.task['id'],
+              currentContent: widget.content,
+              currentTitle: widget.title,
+              taskId: widget.index,
             ),
           ),
         );
@@ -74,7 +77,7 @@ class _ItemsnoteState extends State<Itemsnote> {
               title: Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: Text(
-                  widget.task['title'],
+                  widget.title,
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.black),
                 ),
@@ -82,7 +85,7 @@ class _ItemsnoteState extends State<Itemsnote> {
               subtitle: Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Text(
-                  widget.task['content'],
+                  widget.content,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -94,7 +97,7 @@ class _ItemsnoteState extends State<Itemsnote> {
               trailing: IconButton(
                 onPressed: () async {
                   int response = await db.deleteData(
-                      "DELETE FROM tasks WHERE id = '${widget.task['id']}'");
+                      "DELETE FROM tasks WHERE id = '${widget.index}'");
 
                   if (response > 0) {
                     Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context) => NotesView(),));

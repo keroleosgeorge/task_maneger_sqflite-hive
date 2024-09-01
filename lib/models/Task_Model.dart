@@ -9,14 +9,14 @@ class TaskModel {
   final String title;
   @HiveField(1)
   final String content;
-  @HiveField(2)
-  final String date;
+  // @HiveField(2)
+  // final String date;
 
 
   TaskModel({
     required this.title,
     required this.content,
-    required this.date,
+    // required this.date,
   });
 
 }

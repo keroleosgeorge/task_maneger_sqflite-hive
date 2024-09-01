@@ -19,7 +19,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
     return TaskModel(
       title: fields[0] as String,
       content: fields[1] as String,
-      date: fields[2] as String,
+      // date: fields[2] as String,
     );
   }
 
@@ -30,9 +30,9 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
-      ..write(obj.content)
-      ..writeByte(2)
-      ..write(obj.date);
+      ..write(obj.content);
+      // ..writeByte(2)
+      // ..write(obj.date);
   }
 
   @override

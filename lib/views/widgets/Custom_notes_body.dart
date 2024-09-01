@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:notes_app/models/Task_Model.dart';
 import 'package:notes_app/sqlDb.dart';
 import 'Custom_appbar.dart';
 import 'Custom_itemnotes.dart';
@@ -6,13 +8,13 @@ import 'Custom_itemnotes.dart';
 class CustomNotesBody extends StatelessWidget {
   CustomNotesBody({super.key});
 
-  final sqldb db = sqldb();
-
-  Future<List<Map>> readData() async {
-    List<Map> response = await db.readData("SELECT * FROM tasks");
-    print(response);
-    return response;
-  }
+  // final sqldb db = sqldb();
+  //
+  // Future<List<Map>> readData() async {
+  //   List<Map> response = await db.readData("SELECT * FROM tasks");
+  //   print(response);
+  //   return response;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +30,34 @@ class CustomNotesBody extends StatelessWidget {
             height: 20,
           ),
           Expanded(
-            child: FutureBuilder<List<Map>>(
-              future: readData(),
+            child: FutureBuilder(
+              future: Hive.openBox('tasks'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text("Error loading data"));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text("No tasks available"));
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  final hivebox = Hive.box('tasks');
+                  return ValueListenableBuilder(
+                      valueListenable: hivebox.listenable(),
+                      builder: (context, Box box, child) {
+                        return  ListView.separated(
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            final helper = hivebox.getAt(index) as TaskModel;
+                            return Itemsnote(
+                                index: index,
+                               content: helper.content,
+                               title: helper.title,
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 4),
+                          itemCount: hivebox.length,
+                        );
+                      });
                 } else {
-                  final data = snapshot.data!;
-                  return ListView.separated(
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Itemsnote(index: index, task: data[index]);
-                    },
-                    separatorBuilder: (context, index) =>
-                    const SizedBox(height: 4),
-                    itemCount: data.length,
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
                 }
               },
@@ -57,7 +68,6 @@ class CustomNotesBody extends StatelessWidget {
     );
   }
 }
-
 
 //
 //

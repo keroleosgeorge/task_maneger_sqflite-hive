@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:notes_app/models/Task_Model.dart';
 import '../../sqlDb.dart';
 import '../Notes_view.dart';
 
@@ -8,7 +10,7 @@ class AddButton extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController contentController;
 
-  final sqldb Sqldb = sqldb();
+  // final sqldb Sqldb = sqldb();
 
   @override
   Widget build(BuildContext context) {
@@ -23,28 +25,34 @@ class AddButton extends StatelessWidget {
         String title = titleController.text.trim();
         String content = contentController.text.trim();
 
+        final value = TaskModel(title: title, content: content);
+
+
+
         // Ensure that the fields are not empty
         if (title.isNotEmpty && content.isNotEmpty) {
-          int result = await Sqldb.insertData(
-            "INSERT INTO tasks (title, content) VALUES (?, ?)",
-            [title, content],
-          );
+          Hive.box('tasks').add(value);
 
-          print("+++++++++++++++++++++++++ $result +++++++++++++++++++++++++++");
+          // int result = await Sqldb.insertData(
+          //   "INSERT INTO tasks (title, content) VALUES (?, ?)",
+          //   [title, content],
+          // );
 
-          if (result > 0) {
-            // If the data is inserted successfully, navigate to NotesView
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => NotesView()),
-            );
-          } else {
-            // If there's an error, show a SnackBar with the error message
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Error inserting data'),
-              ),
-            );
-          }
+          // print("+++++++++++++++++++++++++ $result +++++++++++++++++++++++++++");
+          //
+          // if (result > 0) {
+          //   // If the data is inserted successfully, navigate to NotesView
+          //   Navigator.of(context).pushReplacement(
+          //     MaterialPageRoute(builder: (context) => NotesView()),
+          //   );
+          // } else {
+          //   // If there's an error, show a SnackBar with the error message
+          //   ScaffoldMessenger.of(context).showSnackBar(
+          //     const SnackBar(
+          //       content: Text('Error inserting data'),
+          //     ),
+          //   );
+          // }
         } else {
           // Show an error message if fields are empty
           ScaffoldMessenger.of(context).showSnackBar(
