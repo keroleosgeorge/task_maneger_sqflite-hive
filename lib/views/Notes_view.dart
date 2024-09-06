@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'widgets/Custom_notes_body.dart';
 import 'widgets/Show_modal_Bottom_Sheet.dart';
 
-class NotesView extends StatelessWidget {
-   NotesView({super.key});
 
-  List<String> titles = [];
-  List<String> contents = [];
+class NotesView extends StatelessWidget {
+  const NotesView({super.key});
+
+  // final List<String> titles = const [];
+  // final List<String> contents = const [];
 
   @override
   Widget build(BuildContext context) {

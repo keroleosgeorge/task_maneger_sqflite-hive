@@ -1,16 +1,58 @@
+// import 'package:flutter/material.dart';
+// import 'package:hive/hive.dart';
+// import 'package:notes_app/models/Task_Model.dart';
+//
+// class AddButton extends StatelessWidget {
+//   final TextEditingController titleController;
+//   final TextEditingController contentController;
+//
+//   AddButton({required this.titleController, required this.contentController});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return FilledButton(
+//       style: ButtonStyle(
+//         backgroundColor: MaterialStateProperty.all(Colors.purpleAccent),
+//         minimumSize: MaterialStateProperty.all(
+//           const Size(double.infinity, 50),
+//         ),
+//       ),
+//       onPressed: () async {
+//         String title = titleController.text;
+//         String content = contentController.text;
+//
+//         final value = TaskModel(title: title, content: content);
+//
+//         if (title.isNotEmpty && content.isNotEmpty) {
+//           Hive.box('tasks').add(value);
+//           Navigator.pop(context);
+//         } else {
+//           ScaffoldMessenger.of(context).showSnackBar(
+//             const SnackBar(
+//               content: Text('Please fill in all fields'),
+//             ),
+//           );
+//         }
+//       },
+//       child: const Text(
+//         'Add Task',
+//         style: TextStyle(color: Colors.black),
+//       ),
+//     );
+//   }
+// }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:notes_app/models/Task_Model.dart';
-import '../../sqlDb.dart';
-import '../Notes_view.dart';
 
 class AddButton extends StatelessWidget {
   AddButton({super.key, required this.titleController, required this.contentController});
 
   final TextEditingController titleController;
   final TextEditingController contentController;
-
-  // final sqldb Sqldb = sqldb();
 
   @override
   Widget build(BuildContext context) {
@@ -25,34 +67,17 @@ class AddButton extends StatelessWidget {
         String title = titleController.text.trim();
         String content = contentController.text.trim();
 
-        final value = TaskModel(title: title, content: content);
-
-
-
         // Ensure that the fields are not empty
         if (title.isNotEmpty && content.isNotEmpty) {
-          Hive.box('tasks').add(value);
+          final value = TaskModel(title: title, content: content);
+          Hive.box<TaskModel>('tasks').add(value);
 
-          // int result = await Sqldb.insertData(
-          //   "INSERT INTO tasks (title, content) VALUES (?, ?)",
-          //   [title, content],
-          // );
+          // Clear the TextEditingControllers after adding the task
+          titleController.clear();
+          contentController.clear();
 
-          // print("+++++++++++++++++++++++++ $result +++++++++++++++++++++++++++");
-          //
-          // if (result > 0) {
-          //   // If the data is inserted successfully, navigate to NotesView
-          //   Navigator.of(context).pushReplacement(
-          //     MaterialPageRoute(builder: (context) => NotesView()),
-          //   );
-          // } else {
-          //   // If there's an error, show a SnackBar with the error message
-          //   ScaffoldMessenger.of(context).showSnackBar(
-          //     const SnackBar(
-          //       content: Text('Error inserting data'),
-          //     ),
-          //   );
-          // }
+          // Close the modal after submission
+          Navigator.pop(context);
         } else {
           // Show an error message if fields are empty
           ScaffoldMessenger.of(context).showSnackBar(
@@ -69,4 +94,3 @@ class AddButton extends StatelessWidget {
     );
   }
 }
-

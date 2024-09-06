@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'Custom_search.dart';
 
 class CustomAppbar extends StatelessWidget {
-  const CustomAppbar({super.key, required this.title, required this.icon});
+  const CustomAppbar({super.key, required this.title,  this.icon,  this.fun2});
 
   final String title;
-  final IconData icon;
-
+  final IconData? icon;
+final void Function()? fun2;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,7 +31,7 @@ class CustomAppbar extends StatelessWidget {
             ),
           ),
           const Spacer(),
-          CustomSearch(icon: icon),
+          CustomSearch(icon: icon!, fun: fun2),
           const SizedBox(width: 10),
         ],
       ),

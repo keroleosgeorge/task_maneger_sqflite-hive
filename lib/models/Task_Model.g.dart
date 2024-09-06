@@ -1,10 +1,6 @@
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
 part of 'Task_Model.dart';
 
-// **************************************************************************
-// TypeAdapterGenerator
-// **************************************************************************
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 class TaskModelAdapter extends TypeAdapter<TaskModel> {
   @override
@@ -19,20 +15,17 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
     return TaskModel(
       title: fields[0] as String,
       content: fields[1] as String,
-      // date: fields[2] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, TaskModel obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(2)
       ..writeByte(0)
       ..write(obj.title)
       ..writeByte(1)
       ..write(obj.content);
-      // ..writeByte(2)
-      // ..write(obj.date);
   }
 
   @override
@@ -41,7 +34,7 @@ class TaskModelAdapter extends TypeAdapter<TaskModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TaskModelAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is TaskModelAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }

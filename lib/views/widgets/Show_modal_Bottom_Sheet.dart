@@ -1,18 +1,78 @@
+// import 'package:flutter/material.dart';
+// import 'AddButton.dart';
+// import 'CustomTextfield.dart';
+//
+// class ShowModalBottomSheet extends StatelessWidget {
+//   ShowModalBottomSheet({super.key});
+//
+//   final TextEditingController titleController = TextEditingController();
+//   final TextEditingController contentController = TextEditingController();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Padding(
+//       padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//       child: SingleChildScrollView(
+//         child: Column(
+//           children: [
+//             const SizedBox(height: 10),
+//             const Text(
+//               'Add New Task',
+//               style: TextStyle(
+//                 fontWeight: FontWeight.bold,
+//                 fontSize: 20,
+//                 decoration: TextDecoration.underline,
+//               ),
+//             ),
+//             const SizedBox(height: 20),
+//             CustomTextfield(
+//               maxlines: 1,
+//               controller: titleController,
+//               hint: 'Enter Task Name',
+//             ),
+//             const SizedBox(height: 10),
+//             CustomTextfield(
+//               controller: contentController,
+//               hint: 'Content',
+//               maxlines: 3,
+//             ),
+//             const SizedBox(height: 20),
+//             AddButton(
+//               titleController: titleController,
+//               contentController: contentController,
+//             ),
+//             const SizedBox(height: 30),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 import 'package:flutter/material.dart';
 import 'AddButton.dart';
 import 'CustomTextfield.dart';
 
-class ShowModalBottomSheet extends StatelessWidget {
+class ShowModalBottomSheet extends StatefulWidget {
   ShowModalBottomSheet({super.key});
 
+  @override
+  _ShowModalBottomSheetState createState() => _ShowModalBottomSheetState();
+}
+
+class _ShowModalBottomSheetState extends State<ShowModalBottomSheet> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 8.0,
+          right: 8.0,
+          top: 8.0,
+          bottom: MediaQuery.of(context).viewInsets.bottom ,
+        ),
         child: Column(
           children: [
             const SizedBox(height: 10),
@@ -48,6 +108,7 @@ class ShowModalBottomSheet extends StatelessWidget {
     );
   }
 }
+
 
 
 

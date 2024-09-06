@@ -15,6 +15,10 @@ class CustomTextfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onChanged:  (data) {
+        print(data);
+          controller.text = data;
+      },
       controller: controller,
       maxLines: maxlines,
       cursorColor: Colors.purpleAccent,

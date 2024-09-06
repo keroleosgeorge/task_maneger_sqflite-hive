@@ -22,21 +22,22 @@ class CustomNotesBody extends StatelessWidget {
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
       child: Column(
         children: [
-          const CustomAppbar(
+           CustomAppbar(
             title: "Tasks",
-            icon: Icons.search,
+            icon: Icons.delete_forever,
+            fun2: () => Hive.box<TaskModel>('tasks').clear(),
           ),
           const SizedBox(
             height: 20,
           ),
           Expanded(
-            child: FutureBuilder(
-              future: Hive.openBox('tasks'),
+            child: FutureBuilder  (
+              future: Hive.openBox<TaskModel>('tasks'),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.connectionState == ConnectionState.done) {
-                  final hivebox = Hive.box('tasks');
+                  final hivebox = Hive.box<TaskModel>('tasks');
                   return ValueListenableBuilder(
                       valueListenable: hivebox.listenable(),
                       builder: (context, Box box, child) {
@@ -45,13 +46,13 @@ class CustomNotesBody extends StatelessWidget {
                           itemBuilder: (context, index) {
                             final helper = hivebox.getAt(index) as TaskModel;
                             return Itemsnote(
-                                index: index,
-                               content: helper.content,
-                               title: helper.title,
+                              index: index,
+                              content: helper.content,
+                              title: helper.title,
                             );
                           },
                           separatorBuilder: (context, index) =>
-                              const SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           itemCount: hivebox.length,
                         );
                       });
@@ -68,6 +69,8 @@ class CustomNotesBody extends StatelessWidget {
     );
   }
 }
+
+
 
 //
 //

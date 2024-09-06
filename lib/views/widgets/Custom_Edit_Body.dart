@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:notes_app/sqlDb.dart';
+import '../../models/Task_Model.dart';
 import '../Notes_view.dart';
 import 'Custom_appbar.dart';
 import 'Customtextfield.dart';
@@ -8,7 +10,6 @@ class CustomEditBody extends StatefulWidget {
   final int taskId; // Pass task ID to identify the task to be edited
   final String currentTitle; // Pass current title
   final String currentContent; // Pass current content
-
   const CustomEditBody({
     super.key,
     required this.taskId,
@@ -35,21 +36,21 @@ class _CustomEditBodyState extends State<CustomEditBody> {
     contentController = TextEditingController(text: widget.currentContent);
   }
 
-  Future<void> _updateTask() async {
-    // Build SQL query for updating the task
-    int response = await db.updateData(
-      "UPDATE tasks SET title = ?, content = ? WHERE id = ?",
-      [titleController.text, contentController.text, widget.taskId],
-    );
-
-    if (response > 0) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NotesView())); // Go back to the previous screen after updating
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error updating task')),
-      );
-    }
-  }
+  // Future<void> _updateTask() async {
+  //   // Build SQL query for updating the task
+  //   int response = await db.updateData(
+  //     "UPDATE tasks SET title = ?, content = ? WHERE id = ?",
+  //     [titleController.text, contentController.text, widget.taskId],
+  //   );
+  //
+  //   if (response > 0) {
+  //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NotesView())); // Go back to the previous screen after updating
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Error updating task')),
+  //     );
+  //   }
+  // }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -82,7 +83,7 @@ class _CustomEditBodyState extends State<CustomEditBody> {
           children: [
             const CustomAppbar(
               title: 'Edit Task',
-              icon: Icons.check,
+                icon: Icons.edit,
             ),
             const SizedBox(height: 50),
             CustomTextfield(
@@ -97,7 +98,18 @@ class _CustomEditBodyState extends State<CustomEditBody> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _updateTask,
+              onPressed: () {
+                final value = TaskModel(
+                  title: titleController.text.trim(),
+                  content: contentController.text.trim(),
+                );
+
+                Hive.box<TaskModel>('tasks').putAt(widget.taskId, value);
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  NotesView()),
+                );
+              },
               child: const Text('Update Task'),
             ),
           ],

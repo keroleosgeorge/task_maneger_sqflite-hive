@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import 'package:notes_app/sqlDb.dart';
 import 'package:notes_app/views/Notes_view.dart';
+import '../../models/Task_Model.dart';
 import 'Custom_Edit_Body.dart';
 
 class Itemsnote extends StatefulWidget {
   final int index;
+
   // final Map task;
 
   final String title;
   final String content;
 
-  Itemsnote({super.key, required this.index, required this.title, required this.content});
+  Itemsnote(
+      {super.key,
+      required this.index,
+      required this.title,
+      required this.content});
 
   @override
   _ItemsnoteState createState() => _ItemsnoteState();
@@ -55,7 +62,7 @@ class _ItemsnoteState extends State<Itemsnote> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>  CustomEditBody(
+            builder: (context) => CustomEditBody(
               currentContent: widget.content,
               currentTitle: widget.title,
               taskId: widget.index,
@@ -96,17 +103,32 @@ class _ItemsnoteState extends State<Itemsnote> {
               ),
               trailing: IconButton(
                 onPressed: () async {
-                  int response = await db.deleteData(
-                      "DELETE FROM tasks WHERE id = '${widget.index}'");
-
-                  if (response > 0) {
-                    Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context) => NotesView(),));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Task Deleted'),
+                  showDialog(context: context,
+                      builder:  (context) => AlertDialog(
+                        title: const Text('Delete Task'),
+                        content: const Text('Are you sure you want to delete this task?'),
+                        actions: [
+                          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+                          ElevatedButton(onPressed: () async {
+                            await Hive.box<TaskModel>('tasks').deleteAt(widget.index);
+                            Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context) => NotesView(),));
+                          }, child: const Text('Delete',style:  TextStyle(color: Colors.white),),
+                            style:  ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                          ),
+                        ],
                       ),
-                    );
-                  }
+                  );
+                  // int response = await db.deleteData(
+                  //     "DELETE FROM tasks WHERE id = '${widget.index}'");
+                  //
+                  // if (response > 0) {
+                  //   Navigator.pushReplacement(context,  MaterialPageRoute(builder: (context) => NotesView(),));
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(
+                  //       content: Text('Task Deleted'),
+                  //     ),
+                  //   );
+                  // }
                 },
                 icon: const Icon(
                   Icons.delete_rounded,
@@ -121,7 +143,8 @@ class _ItemsnoteState extends State<Itemsnote> {
                 child: Text(
                   selectedDate == null
                       ? 'Select Date'
-                      : DateFormat('MMM dd, yyyy').format(selectedDate!), // Format the selected date
+                      : DateFormat('MMM dd, yyyy').format(selectedDate!),
+                  // Format the selected date
                   style: const TextStyle(color: Colors.black38),
                 ),
               ),
@@ -132,12 +155,6 @@ class _ItemsnoteState extends State<Itemsnote> {
     );
   }
 }
-
-
-
-
-
-
 
 //
 // import 'package:flutter/material.dart';
